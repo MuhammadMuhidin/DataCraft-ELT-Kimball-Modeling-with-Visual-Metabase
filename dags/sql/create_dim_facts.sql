@@ -94,6 +94,11 @@ LEFT JOIN user_events e ON u.id = e.user_id
 LEFT JOIN user_transactions t ON u.id = t.user_id
 WHERE e.timestamp IS NOT NULL
 GROUP BY u.id, user_name;
+/*
+this query is designed to create a fact table that provides a consolidated view of user performance metrics,
+including last login and activity dates, total events, count of specific event types (login, search, purchase), and total purchase amount.
+The resulting fact_user_performance table is likely intended for use in analytics and reporting to analyze user engagement and behavior.
+*/
 
 -- Drop table if exists and create table fact_daily_event_performance;
 DROP TABLE IF EXISTS fact_daily_event_performance;
@@ -113,10 +118,10 @@ LEFT JOIN user_transactions t ON u.id = t.user_id
 GROUP BY event_date
 ORDER BY event_date;
 /*
-this query is designed to create a fact table that provides a consolidated view of user performance metrics,
-including last login and activity dates, total events, count of specific event types (login, search, purchase),
-and total purchase amount. This table is likely intended for analytical purposes, allowing insights into user engagement and
-transaction behavior.
+this query is designed to create a fact table that provides a consolidated view of event daily performance metrics, including total events,
+total logins, total logouts, total searches, total users, total purchasing users, and total purchase amount.
+The resulting fact_daily_event_performance table is likely intended for use in analytics
+and reporting to analyze event engagement and behavior.
 */
 
 -- Drop table if exists and create table fact_weekly_ads_performance;
