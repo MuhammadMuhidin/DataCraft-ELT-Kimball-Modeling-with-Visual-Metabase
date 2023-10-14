@@ -1,0 +1,8 @@
+__pycache__/
+**/__pycache__/
+logs/*
+!logs/.gitkeep
+notebooks/*
+!notebooks/*.ipynb
+other/*
+!other/*.sh
