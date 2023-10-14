@@ -12,8 +12,7 @@
 ---
 
 Need edit here with your:
-- AIRFLOW__SMTP__SMTP_PASSWORD=<YOUR APP PASSWORD HERE> in docker-compose-airflow.yml
-EMAIL_ADDR in .env
+- AIRFLOW__SMTP__SMTP_PASSWORD=<YOUR APP PASSWORD HERE> in docker-compose-airflow.yml and EMAIL_ADDR in .env
 
 Need create connection in airflow for send notifications telegram & slack:
 - telegram_default
