@@ -18,9 +18,4 @@ Need create connection in airflow for send notifications telegram & slack:
 - telegram_default
 - slack_default
 
-![flow](flow.svg)
-![email](email.png)
-![attachment](attachment.png)
-![telegram](telegram.png)
-![slack](slack.png)
-![dashboard-metabase](dashboard-metabase.svg)
+![flow]('flow.svg')
