@@ -18,4 +18,4 @@ Need create connection in airflow for send notifications telegram & slack:
 - telegram_default
 - slack_default
 
-![flow]('flow.svg')
+![flow](flow.svg)
