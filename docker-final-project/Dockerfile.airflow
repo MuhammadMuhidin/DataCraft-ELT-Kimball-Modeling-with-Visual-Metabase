@@ -16,5 +16,6 @@ RUN pip install \
     apache-airflow-providers-telegram==4.1.1 \
     apache-airflow-providers-slack==8.0.0 \
     polars==0.19.7 \
-    pdfkit==1.0.0 
+    pdfkit==1.0.0  \
+    Faker==19.10.0
 COPY --chown=airflow:root ./dags /opt/airflow/dags
