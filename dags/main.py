@@ -2,7 +2,7 @@ from airflow.providers.postgres.operators.postgres import PostgresOperator
 from airflow.operators.python import PythonOperator
 from process import Extract, Load
 from datetime import datetime
-from lib import Notification
+from lib import Notification, FakerGenerators
 from airflow import DAG
 import pendulum
 
@@ -25,13 +25,22 @@ with DAG(
     }
 ) as dag:
 
+    def faker_func():
+        FakerGenerators.create()
+
     def extract_func():
-        extract = Extract(BUCKET_NAME, CRED_PATH, DATA_PATH)
+        extract = Extract(DATA_PATH)
         extract.extract_processing()
 
     def load_func():
         load = Load(DATA_PATH)
         load.load_procesing()
+
+    # Create faker data for data raw
+    faker_task = PythonOperator(
+        task_id='faker_data',
+        python_callable=faker_func
+    )
 
     # Extract data from GCS bucket (csv, parquet) and save to json
     extract_task = PythonOperator(
@@ -52,4 +61,4 @@ with DAG(
         sql='sql/create_dim_facts.sql'
     )
 
-    extract_task >> load_task >> create_dim_facts
+    faker_task >> extract_task >> load_task >> create_dim_facts
