@@ -7,3 +7,4 @@ notebooks/*
 other/*
 !other/*.sh
 data/*
+!data/.gitkeep
