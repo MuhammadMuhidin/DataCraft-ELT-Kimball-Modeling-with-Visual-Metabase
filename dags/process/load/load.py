@@ -16,16 +16,16 @@ class Load:
         self.postgres_password = os.getenv('POSTGRES_PASSWORD')
 
     def load_procesing(self):
-        for filename in os.listdir(self.data_path):
+        for filename in os.listdir(self.data_path+'/extracted'):
             # Search json file
             # if found then write to database postgresql
             if filename.endswith('.json'):
-                json_file_path = os.path.join(self.data_path, filename)
+                json_file_path = os.path.join(self.data_path+'/extracted', filename)
                 df = pl.read_json(json_file_path)
                 df.write_database(
                     table_name=filename[:-5],
                     connection='postgresql://'+self.postgres_user+':'+self.postgres_password+'@'+self.postgres_host+'/postgres',
-                    if_exists='replace',
+                    if_exists='append',
                     engine='sqlalchemy'
                 )
                 print(f"Successfully load data to database.")
