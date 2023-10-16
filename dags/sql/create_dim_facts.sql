@@ -12,7 +12,7 @@ SELECT
     CASE
         WHEN fa.id IS NOT NULL THEN 'Facebook'
         WHEN ia.id IS NOT NULL THEN 'Instagram'
-        ELSE 'Unknown'
+        ELSE 'Other'
     END AS ads_source,
     EXTRACT(YEAR FROM AGE(now(), CAST(u.dob AS DATE))) AS age
 FROM users u
