@@ -1,3 +1,4 @@
+from airflow.providers.postgres.operators.postgres import PostgresOperator
 from airflow.operators.python import PythonOperator
 from lib import Notification, FakerGenerators
 from process import Extract, Load
