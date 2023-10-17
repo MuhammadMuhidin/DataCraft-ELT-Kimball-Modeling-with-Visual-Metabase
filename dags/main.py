@@ -1,14 +1,11 @@
-from airflow.providers.postgres.operators.postgres import PostgresOperator
 from airflow.operators.python import PythonOperator
+from lib import Notification, FakerGenerators
 from process import Extract, Load
 from datetime import datetime
-from lib import Notification, FakerGenerators
 from airflow import DAG
 import pendulum
 
 # Set a variables
-BUCKET_NAME = 'dibimbing_final_bucket'
-CRED_PATH = '/other/google_secret.json'
 DATA_PATH = '/data'
 
 with DAG(
