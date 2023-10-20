@@ -27,7 +27,7 @@ class FakerGenerators:
             data['first_name'].append(self.fake.first_name())
             data['last_name'].append(self.fake.last_name())
             data['email'].append(self.fake.email())
-            data['dob'].append(self.fake.date_of_birth())
+            data['dob'].append(self.fake.date_of_birth(tzinfo=None, min_age=18, max_age=50))
             data['gender'].append(self.fake.random_element(elements=('Male', 'Female')))
             data['register_date'].append(self.fake.date_this_century(before_today=True))
             data['client_id'].append(self.fake.pyint())
