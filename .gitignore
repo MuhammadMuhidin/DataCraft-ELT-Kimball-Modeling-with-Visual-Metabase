@@ -6,6 +6,8 @@ notebooks/*
 !notebooks/*.ipynb
 other/*
 !other/*.sh
+!/data/raw
+!/data/extracted
 **/*.json
 **/*.csv
 **/*.parquet
