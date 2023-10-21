@@ -6,8 +6,8 @@ notebooks/*
 !notebooks/*.ipynb
 other/*
 !other/*.sh
-!/data/raw
-!/data/extracted
+!/data/raw/.gitkeep
+!/data/extracted/.gitkeep
 **/*.json
 **/*.csv
 **/*.parquet
