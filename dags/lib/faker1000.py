@@ -27,7 +27,7 @@ class FakerGenerators:
             data['first_name'].append(self.fake.first_name())
             data['last_name'].append(self.fake.last_name())
             data['email'].append(self.fake.email())
-            data['dob'].append(self.fake.date_of_birth(tzinfo=None, minimum_age=18, maximum_age=50))
+            data['dob'].append(self.fake.date_of_birth(tzinfo=None, minimum_age=18, maximum_age=50)) # Scope age 18-50
             data['gender'].append(self.fake.random_element(elements=('Male', 'Female')))
             data['register_date'].append(self.fake.date_this_century(before_today=True))
             data['client_id'].append(self.fake.pyint())
@@ -52,8 +52,9 @@ class FakerGenerators:
            data['id'].append(self.fake.unique.pyint())
            data['user_id'].append(self.fake.pyint())
            data['event_type'].append(self.fake.word())
-           data['timestamp'].append(self.fake.date_time_this_decade().strftime("%Y-%m-%d %H:%M:%S"))
-           event_data = {'device_type': self.fake.random_element(elements=('Mobile', 'Desktop', 'Tablet')),'location': self.fake.city()}
+           data['timestamp'].append(self.fake.date_time_this_decade(before_now=True, after_now=False).strftime("%Y-%m-%d %H:%M:%S"))
+           event_data = {'device_type': self.fake.random_element(elements=('Mobile', 'Desktop', 'Tablet')),
+                        'location': self.fake.city(), 'event_type': self.fake.random_element(elements=('login', 'search', 'purchase'))}
            data['device_type'].append(event_data['device_type'])
            data['location'].append(event_data['location'])
            data['event_data'].append(json.dumps(event_data))
@@ -76,7 +77,7 @@ class FakerGenerators:
         for _ in range(self.num_records):
             data['id'].append(self.fake.unique.pyint())
             data['user_id'].append(self.fake.pyint())
-            data['transaction_date'].append(self.fake.date())
+            data['transaction_date'].append(self.fake.date_between(start_date='-1y', end_date='today')) # Scope 1 year ago - today
             data['amount'].append(self.fake.pyint())
 
         # Write the data to a parquet file
