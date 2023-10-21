@@ -1,6 +1,9 @@
+-- Create warehouse schema if not exists
+CREATE SCHEMA IF NOT EXISTS warehouse;
+
 -- Drop table if exists and create table dim_user;
-DROP TABLE IF EXISTS dim_user;
-CREATE TABLE dim_user AS
+DROP TABLE IF EXISTS warehouse.dim_user;
+CREATE TABLE warehouse.dim_user AS
 SELECT
     u.id AS user_id,
     u.client_id,
@@ -26,8 +29,8 @@ providing a denormalized and more convenient structure for analysis.
 */
 
 -- Drop table if exists and create table dim_ads;
-DROP TABLE IF EXISTS dim_ads;
-CREATE TABLE dim_ads AS
+DROP TABLE IF EXISTS warehouse.dim_ads;
+CREATE TABLE warehouse.dim_ads AS
 SELECT
     'Facebook' AS ads_source,
     id,
@@ -51,8 +54,8 @@ It's likely designed to provide a unified view of advertising data for analytics
 */
 
 -- Drop table if exists and create table fact_ads_performance;
-DROP TABLE IF EXISTS fact_ads_performance;
-CREATE TABLE fact_ads_performance AS
+DROP TABLE IF EXISTS warehouse.fact_ads_performance;
+CREATE TABLE warehouse.fact_ads_performance AS
 SELECT
     a.ads_id,
     COUNT(DISTINCT a.id) AS total_clicks,
@@ -77,8 +80,8 @@ of advertising campaigns.
 */
 
 -- Drop table if exists and create table fact_user_performance;
-DROP TABLE IF EXISTS fact_user_performance;
-CREATE TABLE fact_user_performance AS
+DROP TABLE IF EXISTS warehouse.fact_user_performance;
+CREATE TABLE warehouse.fact_user_performance AS
 SELECT
     u.id AS user_id,
     u.first_name || ' ' || u.last_name AS user_name,
@@ -101,8 +104,8 @@ The resulting fact_user_performance table is likely intended for use in analytic
 */
 
 -- Drop table if exists and create table fact_daily_event_performance;
-DROP TABLE IF EXISTS fact_daily_event_performance;
-CREATE TABLE fact_daily_event_performance AS
+DROP TABLE IF EXISTS warehouse.fact_daily_event_performance;
+CREATE TABLE warehouse.fact_daily_event_performance AS
 SELECT
     e.timestamp::date AS event_date,
     COUNT(DISTINCT e.id) AS total_events,
@@ -125,8 +128,8 @@ and reporting to analyze event engagement and behavior.
 */
 
 -- Drop table if exists and create table fact_weekly_ads_performance;
-DROP TABLE IF EXISTS fact_weekly_ads_performance;
-CREATE TABLE fact_weekly_ads_performance AS
+DROP TABLE IF EXISTS warehouse.fact_weekly_ads_performance;
+CREATE TABLE warehouse.fact_weekly_ads_performance AS
 SELECT
     DATE_TRUNC('week', CAST(a.timestamp AS timestamp)) AS week_start,
     a.ads_id,
