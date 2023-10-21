@@ -6,3 +6,6 @@ notebooks/*
 !notebooks/*.ipynb
 other/*
 !other/*.sh
+*.json
+*.csv
+*.parquet
