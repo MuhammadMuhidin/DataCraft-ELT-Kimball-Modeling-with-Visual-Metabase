@@ -1,6 +1,6 @@
 from airflow.providers.postgres.operators.postgres import PostgresOperator
 from airflow.operators.python import PythonOperator
-from lib import Notification, FakerGenerators
+from lib import Notification, FakerGenerators, MetabaseAPI
 from process import Extract, Load
 from datetime import datetime
 from airflow import DAG
@@ -34,6 +34,9 @@ with DAG(
         load = Load(DATA_PATH)
         load.load_procesing()
 
+    def metabase_func():
+        MetabaseAPI.send_report()
+
     # Create faker data for data raw
     create_faker_data = PythonOperator(
         task_id='create_faker_data',
@@ -59,4 +62,11 @@ with DAG(
         sql='sql/create_dim_facts.sql'
     )
 
-    create_faker_data >> extract_to_json >> load_to_postgres >> create_dim_facts
+    # Send report dashboard Metabase to Email
+    send_report = PythonOperator(
+        task_id='send_report',
+        python_callable=metabase_func
+    )
+
+
+    create_faker_data >> extract_to_json >> load_to_postgres >> create_dim_facts >> send_report
