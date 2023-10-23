@@ -25,7 +25,7 @@ class Load:
                 df.write_database(
                     table_name=filename[:-5],
                     connection='postgresql://'+self.postgres_user+':'+self.postgres_password+'@'+self.postgres_host+'/postgres',
-                    if_exists='append',
+                    if_exists='replace',
                     engine='sqlalchemy'
                 )
                 print(f"Successfully load data to database.")
