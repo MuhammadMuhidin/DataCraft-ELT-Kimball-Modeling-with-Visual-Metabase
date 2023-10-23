@@ -65,15 +65,14 @@ class FakerGenerators:
             # Define the event data
             event_data = {
                 'device_type': self.fake.random_element(elements=('Mobile', 'Desktop', 'Tablet')),
-                'location': self.fake.city(),
-                'event_type': self.fake.random_element(elements=('login', 'search', 'purchase'))
+                'location': self.fake.city()
             }
 
             # Return the event data
             return {
                 'id': self.fake.unique.pyint(),
                 'user_id': self.fake.pyint(),
-                'event_type': self.fake.word(),
+                'event_type': self.fake.random_element(elements=('login', 'search', 'purchase')),
                 'timestamp': self.fake.date_time_this_decade(before_now=True, after_now=False).strftime("%Y-%m-%d %H:%M:%S"),
                 'device_type': event_data['device_type'],
                 'location': event_data['location'],
