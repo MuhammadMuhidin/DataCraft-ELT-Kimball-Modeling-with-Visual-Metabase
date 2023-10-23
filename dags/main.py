@@ -19,7 +19,7 @@ with DAG(
         'retries' : 1,
         'on_failure_callback': Notification.push,
         'on_retry_callback': Notification.push,
-        'on_success_callback': Notification.push
+        #'on_success_callback': Notification.push
     }
 ) as dag:
 
@@ -35,20 +35,20 @@ with DAG(
         load.load_procesing()
 
     # Create faker data for data raw
-    faker_task = PythonOperator(
-        task_id='faker_data',
+    create_faker_data = PythonOperator(
+        task_id='create_faker_data',
         python_callable=faker_func
     )
 
     # Extract data from GCS bucket (csv, parquet) and save to json
-    extract_task = PythonOperator(
-        task_id='extract_data',
+    extract_to_json = PythonOperator(
+        task_id='extract_to_json',
         python_callable=extract_func
     )
 
     # Load extracted data from json to Postgres
-    load_task = PythonOperator(
-        task_id='load_data',
+    load_to_postgres = PythonOperator(
+        task_id='load_to_postgres',
         python_callable=load_func
     )
 
@@ -59,4 +59,4 @@ with DAG(
         sql='sql/create_dim_facts.sql'
     )
 
-    faker_task >> extract_task >> load_task >> create_dim_facts
+    create_faker_data >> extract_to_json >> load_to_postgres >> create_dim_facts
