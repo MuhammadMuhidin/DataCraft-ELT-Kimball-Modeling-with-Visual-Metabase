@@ -1,6 +1,7 @@
 from airflow.providers.postgres.operators.postgres import PostgresOperator
-from airflow.operators.python import PythonOperator
 from lib import Notification, FakerGenerators, MetabaseAPI
+from airflow.operators.bash_operator import BashOperator
+from airflow.operators.python import PythonOperator
 from process import Extract, Load
 from datetime import datetime
 from airflow import DAG
@@ -43,7 +44,7 @@ with DAG(
         python_callable=faker_func
     )
 
-    # Extract data from GCS bucket (csv, parquet) and save to json
+    # Extract data and save to json
     extract_to_json = PythonOperator(
         task_id='extract_to_json',
         python_callable=extract_func
@@ -55,11 +56,10 @@ with DAG(
         python_callable=load_func
     )
 
-    # Create dim table and facts table in Postgres
-    create_dim_facts = PostgresOperator(
-        task_id='create_dim_facts',
-        postgres_conn_id='connection_postgres',
-        sql='sql/create_dim_facts.sql'
+    # Transform data using dbt run
+    dbt_run = BashOperator(
+        task_id='dbt_run',
+        bash_command='cd /dbt && dbt run --project-dir . --profiles-dir .',
     )
 
     # Send report dashboard Metabase to Email
@@ -69,4 +69,4 @@ with DAG(
     )
 
 
-    create_faker_data >> extract_to_json >> load_to_postgres >> create_dim_facts >> send_report
+    create_faker_data >> extract_to_json >> load_to_postgres >> dbt_run >> send_report
