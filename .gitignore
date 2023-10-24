@@ -16,3 +16,6 @@ other/*
 **/*.json
 **/*.csv
 **/*.parquet
+
+dbt/env/*
+dbt/log/*
