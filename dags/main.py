@@ -2,8 +2,8 @@ from airflow.providers.postgres.operators.postgres import PostgresOperator
 from lib import Notification, FakerGenerators, MetabaseAPI
 from airflow.operators.bash_operator import BashOperator
 from airflow.operators.python import PythonOperator
-from process import Extract, Load
 from datetime import datetime
+from process import Extract
 from airflow import DAG
 import pendulum
 
@@ -31,10 +31,6 @@ with DAG(
         extract = Extract(DATA_PATH)
         extract.extract_processing()
 
-    def load_func():
-        load = Load(DATA_PATH)
-        load.load_procesing()
-
     def metabase_func():
         MetabaseAPI.send_report()
 
@@ -44,16 +40,17 @@ with DAG(
         python_callable=faker_func
     )
 
-    # Extract data and save to json
-    extract_to_json = PythonOperator(
-        task_id='extract_to_json',
+    # Extract data and save to csv
+    extract_to_csv = PythonOperator(
+        task_id='extract_to_csv',
         python_callable=extract_func
     )
 
-    # Load extracted data from json to Postgres
-    load_to_postgres = PythonOperator(
+    # Load extracted data from csv to Postgres
+    load_to_postgres = PostgresOperator(
         task_id='load_to_postgres',
-        python_callable=load_func
+        postgres_conn_id='connection_postgres',
+        sql='/sql/ddl.sql'
     )
 
     # Transform data using dbt run
@@ -68,5 +65,4 @@ with DAG(
         python_callable=metabase_func
     )
 
-
-    create_faker_data >> extract_to_json >> load_to_postgres >> dbt_run >> send_report
+    create_faker_data >> extract_to_csv >> load_to_postgres >> dbt_run >> send_report
