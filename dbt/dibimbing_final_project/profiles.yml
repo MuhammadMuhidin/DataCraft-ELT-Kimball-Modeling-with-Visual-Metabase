@@ -1,0 +1,25 @@
+dibimbing_final_project:
+  outputs:
+
+    dev:
+      type: postgres
+      threads: 10
+      host: postgres # Change to localhost if you are running dbt locally
+      port: 5432 # Change to 1111 if you are running dbt locally
+      user: user
+      pass: password
+      dbname: postgres
+      schema: warehouse
+
+    # prod:
+    #   type: postgres
+    #   threads: [1 or more]
+    #   host: [host]
+    #   port: [port]
+    #   user: [prod_username]
+    #   pass: [prod_password]
+    #   dbname: [dbname]
+    #   schema: [prod_schema]
+
+
+  target: dev

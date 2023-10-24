@@ -1,0 +1,75 @@
+
+version: 2
+
+models:
+  - name: dim_user
+    description: "A starter dbt model"
+    columns:
+      - name: user_id
+        description: "The primary key for this table"
+        tests:
+          - unique
+          - not_null
+
+  - name: dim_ads
+    description: "A starter dbt model"
+    columns:
+      - name: id
+        description: "The primary key for this table"
+        tests:
+          - unique
+          - not_null
+
+  - name: dim_transactions
+    description: "A starter dbt model"
+    columns:
+      - name: user_id
+        description: "The primary key for this table"
+        tests:
+          - unique
+          - not_null
+
+  - name: dim_events
+    description: "A starter dbt model"
+    columns:
+      - name: id
+        description: "The primary key for this table"
+        tests:
+          - unique
+          - not_null
+
+  - name: dim_date
+    description: "A starter dbt model"
+    columns:
+      - name: date_key
+        description: "The primary key for this table"
+        tests:
+          - unique
+          - not_null
+
+  - name: fact_user_performance
+    description: "A starter dbt model"
+    columns:
+      - name: user_id
+        description: "The primary key for this table"
+        tests:
+          - unique
+          - not_null
+
+  - name: fact_daily_event_performance
+    description: "A starter dbt model"
+    columns:
+      - name: event_date
+        description: "The primary key for this table"
+        tests:
+          - unique
+          - not_null
+
+  - name: fact_weekly_ads_performance
+    description: "A starter dbt model"
+    columns:
+      - name: week
+        description: "The primary key for this table"
+        tests:
+          - unique
+          - not_null
