@@ -2,7 +2,7 @@
 
 ![flow](flow.svg)
 ## Concept
-Raw data from Faker will be extracted by Polars into csv format, then Polars will write it to Postgresql. after that, the Airflow send dbt run command for transformation data. Airflow will use the MetabaseApi to send reports via Email. a Metabase get data from Postgres to Visualization.
+Raw data from faker will be extracted by polars into csv format, then PostgresOperator with .sql write to postgres. after that airflow send dbt run command to transformation data. airflow will use the metabase api to send reports via email. a metabase get data from postgres to visualization.
 
 ## Tech Stack
 1. `Docker`: Manages application dependencies in a container and ensures consistent environments.
