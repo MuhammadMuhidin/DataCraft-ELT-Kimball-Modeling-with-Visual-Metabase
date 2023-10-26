@@ -27,18 +27,22 @@ with DAG(
 ) as dag:
 
     def validation_func():
+        # Simple validation to check if your secret code is valid
         try:
+            # read secret.txt and check if it's valid direct to create_faker_data
             with open(DATA_PATH+'/secret.txt', 'r') as file:
                 file_content = file.read()
                 if file_content == '87f2aef472d091f9a4bc6e9c5e31c94baf6d7238b9120901f9a92cb4a189e1fb':
                     print('your code is valid :)')
                     return 'create_faker_data'
                 else:
+                    # if not valid, return not_valid
                     print('your code not valid :( please try again')
-                    return 'not_valid'
+                    return 'invalid_code'
         except:
+            # if file not found, return not_valid
             print('File not found')
-            return 'not_valid'
+            return 'not_found_secret_file'
 
     def faker_func():
         FakerGenerators.create()
@@ -87,10 +91,15 @@ with DAG(
         python_callable=metabase_func
     )
 
-    # End
-    not_valid = DummyOperator(
-        task_id='not_valid',
+    # If file found but invalid
+    invalid_code = DummyOperator(
+        task_id='invalid_code',
     )
 
-    validation >> [create_faker_data, not_valid]
+    # If file not found
+    not_found_secret_file = DummyOperator(
+        task_id='not_found_secret_file',
+    )
+
+    validation >> [create_faker_data, invalid_code, not_found_secret_file]
     create_faker_data >> extract_to_csv >> load_to_postgres >> dbt_run >> send_report
