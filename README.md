@@ -28,6 +28,7 @@ Before running the data pipeline, ensure you have the following prerequisites in
 - [Postgres](https://www.postgresql.org/)
 - [Metabase](https://www.metabase.com/)
 - [DBT](https://docs.getdbt.com/)
+- [DataHub](https://datahubproject.io/)
 
 ## Get Started
 ### 1. clone repository
