@@ -19,3 +19,5 @@ other/*
 
 dbt/env/*
 dbt/log/*
+
+mysql

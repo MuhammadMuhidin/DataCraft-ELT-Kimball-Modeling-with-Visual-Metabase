@@ -6,6 +6,7 @@ help:
 	@echo "## metabase		- Creating DB metabaseappdb and Run a Metabase container"
 	@echo "## jupyter		- Spinup jupyter notebook for testing and validation purposes."
 	@echo "## airflow		- Spinup airflow scheduler and webserver."
+	@echo "## datahub		- Spinup datahub and any other stack requirement."
 
 docker-build:
 	@echo '__________________________________________________________'
@@ -54,4 +55,11 @@ airflow:
 	@echo 'Creating Airflow Instance ...'
 	@echo '__________________________________________________________'
 	@docker-compose -f ./docker-final-project/docker-compose-airflow.yml --env-file .env up -d
+	@echo '==========================================================='
+
+datahub:
+	@echo '__________________________________________________________'
+	@echo 'Creating Datahub Instance...'
+	@echo '__________________________________________________________'
+	@docker-compose -f ./docker-final-project/docker-compose-datahub.yml up
 	@echo '==========================================================='
