@@ -1,5 +1,7 @@
 from airflow.providers.postgres.operators.postgres import PostgresOperator
 from lib import Notification, FakerGenerators, MetabaseAPI
+from airflow.operators.python import BranchPythonOperator
+from airflow.operators.dummy import DummyOperator
 from airflow.operators.bash_operator import BashOperator
 from airflow.operators.python import PythonOperator
 from datetime import datetime
@@ -24,6 +26,20 @@ with DAG(
     }
 ) as dag:
 
+    def validation_func():
+        try:
+            with open(DATA_PATH+'/secret.txt', 'r') as file:
+                file_content = file.read()
+                if file_content == '87f2aef472d091f9a4bc6e9c5e31c94baf6d7238b9120901f9a92cb4a189e1fb':
+                    print('your code is valid :)')
+                    return 'create_faker_data'
+                else:
+                    print('your code not valid :( please try again')
+                    return 'not_valid'
+        except:
+            print('File not found')
+            return 'not_valid'
+
     def faker_func():
         FakerGenerators.create()
 
@@ -33,6 +49,12 @@ with DAG(
 
     def metabase_func():
         MetabaseAPI.send_report()
+
+    # Branching for validation
+    validation = BranchPythonOperator(
+        task_id='validation',
+        python_callable=validation_func
+    )
 
     # Create faker data for data raw
     create_faker_data = PythonOperator(
@@ -65,4 +87,10 @@ with DAG(
         python_callable=metabase_func
     )
 
+    # End
+    not_valid = DummyOperator(
+        task_id='not_valid',
+    )
+
+    validation >> [create_faker_data, not_valid]
     create_faker_data >> extract_to_csv >> load_to_postgres >> dbt_run >> send_report
