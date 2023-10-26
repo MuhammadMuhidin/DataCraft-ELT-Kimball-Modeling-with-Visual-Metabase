@@ -36,11 +36,11 @@ with DAG(
                     print('your code is valid :)')
                     return 'create_faker_data'
                 else:
-                    # if not valid, return not_valid
+                    # if not valid, return invalid_code
                     print('your code not valid :( please try again')
                     return 'invalid_code'
         except:
-            # if file not found, return not_valid
+            # if file not found, return not_found_secret_file
             print('File not found')
             return 'not_found_secret_file'
 
