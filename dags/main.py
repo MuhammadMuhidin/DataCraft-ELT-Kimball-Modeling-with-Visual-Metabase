@@ -1,16 +1,19 @@
 from airflow.providers.postgres.operators.postgres import PostgresOperator
 from lib import Notification, FakerGenerators, MetabaseAPI
 from airflow.operators.python import BranchPythonOperator
-from airflow.operators.dummy import DummyOperator
 from airflow.operators.bash_operator import BashOperator
 from airflow.operators.python import PythonOperator
+from airflow.operators.dummy import DummyOperator
 from datetime import datetime
 from process import Extract
 from airflow import DAG
 import pendulum
+import hashlib
+
 
 # Set a variables
 DATA_PATH = '/data'
+keygen = '8c747032a1aa5af580f48ad2be75366bb517fe8b0990d10931eda23795f3cf26'
 
 with DAG(
     'final_project',
@@ -30,9 +33,11 @@ with DAG(
         # Simple validation to check if your secret code is valid
         try:
             # read secret.txt and check if it's valid direct to create_faker_data
-            with open(DATA_PATH+'/secret.txt', 'r') as file:
+            with open(DATA_PATH+'/secret_key.txt', 'r') as file:
+                # generate hash key
+                hash_key = hashlib.sha256(keygen.encode()).hexdigest()
                 file_content = file.read()
-                if file_content == '87f2aef472d091f9a4bc6e9c5e31c94baf6d7238b9120901f9a92cb4a189e1fb':
+                if file_content == hash_key:
                     print('your code is valid :)')
                     return 'create_faker_data'
                 else:
@@ -101,5 +106,13 @@ with DAG(
         task_id='not_found_secret_file',
     )
 
+    # End of DAG
+    end = DummyOperator(
+        task_id='end',
+        trigger_rule='none_failed' # If none failed then end
+    )
+
     validation >> [create_faker_data, invalid_code, not_found_secret_file]
-    create_faker_data >> extract_to_csv >> load_to_postgres >> dbt_run >> send_report
+    create_faker_data >> extract_to_csv >> load_to_postgres >> dbt_run >> send_report >> end
+    invalid_code >> end
+    not_found_secret_file >> end
