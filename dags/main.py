@@ -4,6 +4,7 @@ from airflow.operators.python import BranchPythonOperator
 from airflow.operators.bash_operator import BashOperator
 from airflow.operators.python import PythonOperator
 from airflow.operators.dummy import DummyOperator
+from airflow.utils.task_group import TaskGroup
 from datetime import datetime
 from process import Extract
 from airflow import DAG
@@ -39,7 +40,7 @@ with DAG(
                 file_content = file.read()
                 if file_content == hash_key:
                     print('your code is valid :)')
-                    return 'create_faker_data'
+                    return 'Process.create_faker_data'
                 else:
                     # if not valid, return invalid_code
                     print('your code not valid :( please try again')
@@ -65,36 +66,37 @@ with DAG(
         python_callable=validation_func
     )
 
-    # Create faker data for data raw
-    create_faker_data = PythonOperator(
-        task_id='create_faker_data',
-        python_callable=faker_func
-    )
+    with TaskGroup('Process') as Process:
+            # Create faker data for data raw
+            create_faker_data = PythonOperator(
+                task_id='create_faker_data',
+                python_callable=faker_func
+            )
 
-    # Extract data and save to csv
-    extract_to_csv = PythonOperator(
-        task_id='extract_to_csv',
-        python_callable=extract_func
-    )
+            # Extract data and save to csv
+            extract_to_csv = PythonOperator(
+                task_id='extract_to_csv',
+                python_callable=extract_func
+            )
 
-    # Load extracted data from csv to Postgres
-    load_to_postgres = PostgresOperator(
-        task_id='load_to_postgres',
-        postgres_conn_id='connection_postgres',
-        sql='/sql/ddl.sql'
-    )
+            # Load extracted data from csv to Postgres
+            load_to_postgres = PostgresOperator(
+                task_id='load_to_postgres',
+                postgres_conn_id='connection_postgres',
+                sql='/sql/ddl.sql'
+            )
 
-    # Transform data using dbt run
-    dbt_run = BashOperator(
-        task_id='dbt_run',
-        bash_command='cd /dbt && dbt run --project-dir . --profiles-dir .',
-    )
+            # Transform data using dbt run
+            dbt_run = BashOperator(
+                task_id='dbt_run',
+                bash_command='cd /dbt && dbt run --project-dir . --profiles-dir .',
+            )
 
-    # Send report dashboard Metabase to Email
-    send_report = PythonOperator(
-        task_id='send_report',
-        python_callable=metabase_func
-    )
+            # Send report dashboard Metabase to Email
+            send_report = PythonOperator(
+                task_id='send_report',
+                python_callable=metabase_func
+            )
 
     # If file found but invalid
     invalid_code = DummyOperator(
@@ -112,7 +114,8 @@ with DAG(
         trigger_rule='none_failed' # If none failed then end
     )
 
-    validation >> [create_faker_data, invalid_code, not_found_secret_file]
+    validation >> [create_faker_data, invalid_code , not_found_secret_file]
     create_faker_data >> extract_to_csv >> load_to_postgres >> dbt_run >> send_report >> end
     invalid_code >> end
     not_found_secret_file >> end
+    
