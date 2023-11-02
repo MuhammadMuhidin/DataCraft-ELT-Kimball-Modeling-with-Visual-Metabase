@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+  statsd-exporter:
+    image: prom/statsd-exporter:v0.21.0
+    volumes:
+      - ../configs/statsd.yml:/home/statsd-mapping-configs.yaml
+    entrypoint: ["/bin/sh", "-c", "--"]
+    command: ["statsd_exporter --log.level debug --statsd.mapping-config=/home/statsd-mapping-configs.yaml"]
+    ports:
+      - ${STATSD_EXP_SCRAPE_PORT}:9102   # scrape port
+      - ${STATSD_EXP_INGEST_PORT}:9125   # ingest port
+    restart: always
+
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - ${PROMETHEUS_PORT}:9090
+    volumes:
+      - ../prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    restart: always
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - ${GRAFANA_PORT}:3000
+    restart: always
+
+networks:
+  default:
+    name: dibimbing-network
+    external: true
