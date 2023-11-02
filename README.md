@@ -2,7 +2,7 @@
 
 ![flow](flow.svg)
 ## Concept
-Raw data from faker will be extracted by polars into csv format, then PostgresOperator with .sql write to postgres. after that airflow send dbt run command to transformation data. airflow will use the metabase api to send reports via email. a metabase get data from postgres to visualization. and Data Hub organizes and stores metadata about your datasets.
+Raw data from faker will be extracted by polars into csv format, then PostgresOperator with .sql write to postgres. after that airflow send dbt run command to transformation data. airflow will use the metabase api to send reports via email. a metabase get data from postgres to visualization. and use prometheus for monitoring.
 
 ## Tech Stack
 1. `Docker`: Manages application dependencies in a container and ensures consistent environments.
@@ -20,6 +20,8 @@ Raw data from faker will be extracted by polars into csv format, then PostgresOp
 13. `PDFkit`: A JavaScript PDF generation library, possibly used for creating PDF reports or documents in the data pipeline.
 14. `Faker`: Generate the random values for producer data.
 15. `DataHub`: is like a librarian for your data. It organizes and stores metadata about your datasets, making it easier for teams to find, understand, and use data effectively. It's your go-to catalog for efficient data management and collaboration.
+16. `Prometheus`: Prometheus is an open-source monitoring and alerting toolkit designed for reliability and scalability of systems. It is particularly well-suited for dynamic cloud environments. Prometheus collects metrics from configured targets at specified intervals, evaluates rule expressions, and can trigger alerts if certain conditions are met. It's commonly used for monitoring containerized applications and microservices.
+17. `Grafana`: Grafana is an open-source platform for monitoring and observability. It provides a customizable and feature-rich dashboard for visualizing data from various sources, including Prometheus. Grafana supports different data sources, allowing you to create insightful and interactive dashboards to monitor and analyze your systems' performance. It's often used in conjunction with Prometheus for comprehensive monitoring solutions.
 
 ## Prerequisites
 Before running the data pipeline, ensure you have the following prerequisites installed, configured, and running:
@@ -42,6 +44,7 @@ Before running the data pipeline, ensure you have the following prerequisites in
 "## metabase		- Creating DB metabaseappdb and Run a Metabase container"
 "## jupyter		- Spinup jupyter notebook for testing and validation purposes."
 "## airflow		- Spinup airflow scheduler and webserver."
+"## prometheus		- Spinup prometheus and grafana container."
 "## datahub		- Spinup datahub and any other stack requirement."
 ```
 ---
